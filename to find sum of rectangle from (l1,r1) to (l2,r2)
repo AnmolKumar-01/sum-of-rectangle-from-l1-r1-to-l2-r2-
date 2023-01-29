@@ -1,0 +1,100 @@
+// to find sum of rectangle from (l1,r1) to (l2,r2)
+
+// 1st approach = run loop for (i=l1 ro l2) and & (j=r1 to r2) and add each element
+// 2nd approach = find prefix sum row wise and find sum of each row as ( array[l1 ,r2] - array[l1 , r1-1] and add all row's sum till l2 
+// 3rd approach = find prefix sum row-column wise and find sum (code given below)
+
+
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+int rectangleSum(vector<vector<int>> &v, int l1, int r1, int l2 , int r2){
+
+    int sum=0;
+
+    // ----> simple method
+
+    // for(int i=l1 ; i<=l2 ; i++){
+    //     for(int j=r1 ; j<=r2 ; j++){
+    //         sum+=v[i][j];
+    //     }
+    // }
+
+    // by prefix sum array
+
+    // prefix sum array row-wise
+    for(int i=0 ; i<v.size() ; i++){
+        for(int j=1 ; j<v[i].size() ; j++){
+
+            v[i][j] += v[i][j-1];
+        }
+    }
+
+    // printing prefix sum array row- wise 
+    cout<<endl<<"prefix sum 1d-array row wise: \n";
+    for(int i=0; i<v.size() ; i++){
+        for(int j=0 ; j<v[i].size() ; j++){
+            cout<<v[i][j]<<"  ";
+        }
+        cout<<endl;
+    }
+
+    // prefix sum 2d array both row and column wise (each element give sum of rectangle from (0,0) to that (i,j) of original matrix)
+    for(int i=1 ; i<v.size() ; i++){
+        for( int j=0 ; j< v[0].size() ; j++){
+            v[i][j]+=v[i-1][j];
+        }
+    }
+
+    
+
+    // printing prefix sum 2d array row-column wise 
+    cout<<endl<<"prefix sum 2d-array: \n";
+    for(int i=0; i<v.size() ; i++){
+        for(int j=0 ; j<v[i].size() ; j++){
+            cout<<v[i][j]<<"  ";
+        }
+        cout<<endl;
+    }
+
+    // getting sum of required rectangle
+
+    int top_sum=0 , left_sum=0, top_left_sum=0;
+
+    if(l1 != 0) top_sum = v[l1-1][r2];
+    if(r1 != 0) left_sum = v[l2][r1-1];
+    if(r1 !=0 && l1 != 0) top_left_sum = v[l1-1][r1-1];    
+
+    sum = v[l2][r2] -top_sum -left_sum + top_left_sum;
+
+
+    cout<<"\n The sum of required rectangle from (l1,r1) to (l2,r2) is: ";
+    return sum;
+}
+ 
+int main(){
+
+    int n,m;
+    cout<<"Enter n and m: ";
+    cin>>n>>m;
+
+    vector<vector<int>> matrix( n , vector<int> (m));
+
+    for(int i=0; i<n ; i++){
+        for(int j=0 ; j<m ; j++){
+            cin>>matrix[i][j];
+        }
+    }
+
+    int l1,r1,l2,r2;
+    cout<<"Enter (l1,r1),(l2,r2) : ";
+    cin>>l1>>r1>>l2>>r2;
+
+    int sum = rectangleSum(matrix , l1,r1,l2,r2);
+
+    cout<<"The sum is : "<<sum<<endl;
+
+    return 0;
+}
